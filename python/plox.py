@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
 
 import sys
-from typing import List
+
+from plox import LoxError, Scanner
 
 
-class Token:
-    def __init__(self) -> None:
-        pass
-
-
-class Scanner:
-    def __init__(self, source) -> None:
-        self.source = source
-
-    def scan_tokens(self) -> List[Token]:
-        return []
-
-
-def run(source):
+def run(source: str):
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
 
@@ -25,7 +13,7 @@ def run(source):
         print(token)
 
 
-def run_file(filename):
+def run_file(filename: str):
     with open(filename, mode="r") as f:
         contents = f.read()
     run(contents)
@@ -37,7 +25,10 @@ def run_prompt():
             line = input("> ")
         except EOFError:
             break
-        run(line)
+        try:
+            run(line)
+        except LoxError:
+            pass
 
 
 def main():
@@ -46,7 +37,10 @@ def main():
         print(f"Usage: {args[0]} [script]")
         sys.exit(64)
     elif len(args) == 2:
-        run_file(args[1])
+        try:
+            run_file(args[1])
+        except LoxError:
+            sys.exit(65)
     else:
         run_prompt()
 
