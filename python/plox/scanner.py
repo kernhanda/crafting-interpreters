@@ -4,6 +4,7 @@ from plox.token import Token, TokenType
 from plox.utils import error
 
 
+# TODO: Add support for C-style block comments /* */. Handle newlines as well as nesting.
 class Scanner:
     Keywords: Dict[str, TokenType] = {
         "and": TokenType.AND,
