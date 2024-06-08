@@ -54,5 +54,65 @@ class Scanner:
                 self.add_token(TokenType.SEMICOLON)
             case "*":
                 self.add_token(TokenType.STAR)
+            case "!":
+                self.add_token(
+                    TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG
+                )
+            case "=":
+                self.add_token(
+                    TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL
+                )
+            case "<":
+                self.add_token(
+                    TokenType.LESS_EQUAL if self.match("=") else TokenType.LESS
+                )
+            case ">":
+                self.add_token(
+                    TokenType.GREATER_EQUAL if self.match("=") else TokenType.GREATER
+                )
+            case "/":
+                if self.match("/"):
+                    while self.peek() != "\n" and not self.is_at_end():
+                        self.advance()
+                else:
+                    self.add_token(TokenType.SLASH)
+            case " " | "\r" | "\t":
+                pass
+            case "\n":
+                self.line += 1
+            case '"':
+                self.string()
             case _:
                 error(self.line, "Unexpected character.")
+
+    def match(self, expected: str) -> bool:
+        if self.is_at_end():
+            return False
+        if self.source[self.current] != expected:
+            return False
+
+        self.current += 1
+        return True
+
+    def peek(self) -> str:
+        if self.is_at_end():
+            return "\0"
+
+        return self.source[self.current]
+
+    def string(self):
+        while self.peek() != '"' and not self.is_at_end():
+            if self.peek() == "\n":
+                self.line += 1
+            self.advance()
+
+        if self.is_at_end():
+            error(self.line, "Unterminated string.")
+            return
+
+        # The closing ""
+        self.advance()
+
+        # Trim the surrounding quotes.
+        value = self.source[self.start + 1 : self.current - 1]
+        self.add_token(TokenType.STRING, value)
