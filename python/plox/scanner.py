@@ -1,8 +1,7 @@
 from typing import Any, List, Optional
 
-from python.plox.utils import error
-
-from .token import Token, TokenType
+from plox.token import Token, TokenType
+from plox.utils import error
 
 
 class Scanner:
