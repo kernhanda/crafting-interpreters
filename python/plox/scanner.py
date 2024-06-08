@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from python.plox.utils import LoxError
+from python.plox.utils import error
 
 from .token import Token, TokenType
 
@@ -56,4 +56,4 @@ class Scanner:
             case "*":
                 self.add_token(TokenType.STAR)
             case _:
-                raise LoxError(self.line, "Unexpected character.")
+                error(self.line, "Unexpected character.")
