@@ -1,11 +1,15 @@
+from functools import singledispatchmethod
 from typing import Any
 
-from python.plox.token import Token
+from plox.token import Token
 
 
 class Expr:
     def __init__(self) -> None:
         pass
+
+    def accept(self, visitor: "Visitor") -> Any:
+        return visitor.visit(self)
 
 
 class Binary(Expr):
@@ -33,3 +37,21 @@ class Unary(Expr):
         super().__init__()
         self.op = op
         self.right = right
+
+
+class Visitor:
+    def __init__(self) -> None:
+        pass
+
+    @singledispatchmethod
+    def visit(self, _: Expr) -> Any | None:
+        pass
+
+    @visit.register
+    def visitBinary(self, _: Binary) -> Any | None: ...
+    @visit.register
+    def visitGrouping(self, _: Grouping) -> Any | None: ...
+    @visit.register
+    def visitLiteral(self, _: Literal) -> Any | None: ...
+    @visit.register
+    def visitUnary(self, _: Unary) -> Any | None: ...
