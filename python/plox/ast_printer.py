@@ -1,5 +1,4 @@
 from functools import singledispatchmethod
-from typing import List
 
 from plox.expr import *
 
