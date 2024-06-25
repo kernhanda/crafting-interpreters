@@ -2,6 +2,12 @@ from typing import List
 
 from plox.expr import *
 from plox.token import *
+from plox.utils import error
+
+
+class ParseError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
 
 
 class Parser:
@@ -117,4 +123,42 @@ class Parser:
             expr = self.expression()
             self.consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
-        raise RuntimeError()
+
+        raise self.error(self.peek(), "Expect expression.")
+
+    def error(self, token: Token, message: str):
+        error(token, message)
+        return ParseError()
+
+    def consume(self, type: TokenType, message: str) -> Token:
+        if self.check(type):
+            return self.advance()
+
+        raise self.error(self.peek(), message)
+
+    def synchronize(self):
+        self.advance()
+
+        while not self.is_at_end():
+            if self.previous().type == TokenType.SEMICOLON:
+                return
+
+            if self.peek().type in [
+                TokenType.CLASS,
+                TokenType.FUN,
+                TokenType.VAR,
+                TokenType.FOR,
+                TokenType.IF,
+                TokenType.WHILE,
+                TokenType.PRINT,
+                TokenType.RETURN,
+            ]:
+                return
+
+            self.advance()
+
+    def parse(self) -> Expr | None:
+        try:
+            return self.expression()
+        except ParseError:
+            return None

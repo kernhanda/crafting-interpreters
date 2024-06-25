@@ -9,9 +9,13 @@ from plox import LoxError, Scanner
 def run(source: str):
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
+    try:
+        parser = Parser(tokens)
+        expression = parser.parse()
+    except:
+        return
 
-    for token in tokens:
-        print(token)
+    print(AstPrinter().print(expression))
 
 
 def run_file(filename: str):
