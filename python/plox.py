@@ -5,6 +5,8 @@ import sys
 from plox import *
 from plox import LoxError, Scanner
 
+interpreter = Interpreter()
+
 
 def run(source: str):
     scanner = Scanner(source)
@@ -15,7 +17,7 @@ def run(source: str):
     except:
         return
 
-    print(AstPrinter().print(expression))
+    interpreter.interpret(expression)
 
 
 def run_file(filename: str):
@@ -46,6 +48,8 @@ def main():
             run_file(args[1])
         except LoxError:
             sys.exit(65)
+        except RuntimeError:
+            sys.exit(70)
     else:
         run_prompt()
 

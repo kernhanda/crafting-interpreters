@@ -13,6 +13,17 @@ class LoxError(Exception):
         return f"Error at line {self.line}: {self.err}"
 
 
+class ParseError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+
+class RuntimeError(Exception):
+    def __init__(self, token: Token, message: str) -> None:
+        super().__init__(message)
+        self.token = token
+
+
 @singledispatch
 def error(_, message: str):
     assert False

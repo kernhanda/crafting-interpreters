@@ -2,12 +2,7 @@ from typing import List
 
 from plox.expr import *
 from plox.token import *
-from plox.utils import error
-
-
-class ParseError(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+from plox.utils import *
 
 
 class Parser:
@@ -157,8 +152,5 @@ class Parser:
 
             self.advance()
 
-    def parse(self) -> Expr | None:
-        try:
-            return self.expression()
-        except ParseError:
-            return None
+    def parse(self) -> Expr:
+        return self.expression()
