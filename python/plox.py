@@ -36,6 +36,8 @@ def run_prompt():
             run(line)
         except LoxError:
             pass
+        except RuntimeError as e:
+            print(f"{e}\n[line {e.token.line}]\n")
 
 
 def main():
